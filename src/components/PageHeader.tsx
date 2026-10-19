@@ -21,7 +21,7 @@ const statusStyles: Record<string, string> = {
 
 export function StatusPill({ status }: { status: string }) {
   return (
-    <span className={`rounded px-2 py-0.5 font-mono text-[11px] uppercase ${statusStyles[status] ?? statusStyles.pending}`}>
+    <span className={`rounded px-2 py-0.5 font-mono text-[11px] uppercase ${statusStyles[status] ?? statusStyles["pending"]}`}>
       {status}
     </span>
   );

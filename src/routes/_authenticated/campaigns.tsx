@@ -47,16 +47,16 @@ function Campaigns() {
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !body.trim()) return toast.error("Name and message are required");
-    if (!audience.length) return toast.error("No recipients match");
+    if (!name.trim() || !body.trim()) return void toast.error("Name and message are required");
+    if (!audience.length) return void toast.error("No recipients match");
     setBusy(true);
     const scheduled_at = when ? new Date(when).toISOString() : new Date().toISOString();
     const { data: camp, error } = await supabase.from("campaigns").insert({ name: name.trim(), body, scheduled_at }).select().single();
-    if (error || !camp) { setBusy(false); return toast.error(error?.message ?? "Failed"); }
+    if (error || !camp) { setBusy(false); return void toast.error(error?.message ?? "Failed"); }
     const rows = audience.map((c) => ({ campaign_id: camp.id, contact_id: c.id, phone: c.phone!, body: renderTemplate(body, c), scheduled_at }));
     for (let i = 0; i < rows.length; i += 500) {
       const { error: e2 } = await supabase.from("messages").insert(rows.slice(i, i + 500));
-      if (e2) { setBusy(false); return toast.error(e2.message); }
+      if (e2) { setBusy(false); return void toast.error(e2.message); }
     }
     setBusy(false);
     toast.success(`Queued ${rows.length} SMS${when ? " for " + new Date(when).toLocaleString() : ""}`);

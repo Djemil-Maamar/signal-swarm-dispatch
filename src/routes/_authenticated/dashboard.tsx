@@ -19,7 +19,7 @@ function Dashboard() {
       const res = await Promise.all(
         statuses.map((s) => supabase.from("messages").select("id", { count: "exact", head: true }).eq("status", s)),
       );
-      return Object.fromEntries(statuses.map((s, i) => [s, res[i].count ?? 0])) as Record<string, number>;
+      return Object.fromEntries(statuses.map((s, i) => [s, res[i]?.count ?? 0])) as Record<string, number>;
     },
   });
   const recent = useQuery({

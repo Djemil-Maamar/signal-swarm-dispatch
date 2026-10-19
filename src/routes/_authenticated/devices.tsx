@@ -34,7 +34,7 @@ function Devices() {
     if (!name.trim()) return;
     const t = randomToken();
     const { error } = await supabase.from("devices").insert({ name: name.trim(), token_hash: await sha256Hex(t) });
-    if (error) return toast.error(error.message);
+    if (error) return void toast.error(error.message);
     setToken(t); setName("");
     qc.invalidateQueries({ queryKey: ["devices"] });
   }
