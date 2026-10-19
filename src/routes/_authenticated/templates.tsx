@@ -26,9 +26,9 @@ function Templates() {
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !body.trim()) return toast.error("Name and text are required");
+    if (!name.trim() || !body.trim()) return void toast.error("Name and text are required");
     const { error } = await supabase.from("templates").insert({ name: name.trim(), body });
-    if (error) return toast.error(error.message);
+    if (error) return void toast.error(error.message);
     setName(""); setBody("");
     qc.invalidateQueries({ queryKey: ["templates"] });
   }

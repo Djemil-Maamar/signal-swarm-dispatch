@@ -45,7 +45,7 @@ export function parseCsv(text: string): Record<string, string>[] {
   row.push(field);
   if (row.some((f) => f.trim() !== "")) rows.push(row);
   if (rows.length < 2) return [];
-  const headers = rows[0].map((h) => h.trim().toLowerCase());
+  const headers = (rows[0] ?? []).map((h) => h.trim().toLowerCase());
   return rows.slice(1).map((r) => Object.fromEntries(headers.map((h, i) => [h, (r[i] ?? "").trim()])));
 }
 

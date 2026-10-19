@@ -27,14 +27,14 @@ function Contacts() {
 
   async function add(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.phone.trim()) return toast.error("Phone is required");
+    if (!form.phone.trim()) return void toast.error("Phone is required");
     const { error } = await supabase.from("contacts").insert({
       name: form.name.trim(),
       phone: normalizePhone(form.phone),
       email: form.email.trim() || null,
       tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
     });
-    if (error) return toast.error(error.message);
+    if (error) return void toast.error(error.message);
     setForm({ name: "", phone: "", email: "", tags: "" });
     refresh();
   }
@@ -42,17 +42,17 @@ function Contacts() {
   async function importCsv(file: File) {
     const rows = parseCsv(await file.text());
     const items = rows
-      .filter((r) => r.phone)
+      .filter((r) => r["phone"])
       .map((r) => ({
-        name: r.name ?? "",
-        phone: normalizePhone(r.phone),
-        email: r.email || null,
-        tags: (r.tags ?? "").split(/[;|]/).map((t) => t.trim()).filter(Boolean),
+        name: r["name"] ?? "",
+        phone: normalizePhone(r["phone"] ?? ""),
+        email: r["email"] || null,
+        tags: (r["tags"] ?? "").split(/[;|]/).map((t) => t.trim()).filter(Boolean),
       }));
-    if (!items.length) return toast.error("No rows with a 'phone' column found");
+    if (!items.length) return void toast.error("No rows with a 'phone' column found");
     for (let i = 0; i < items.length; i += 500) {
       const { error } = await supabase.from("contacts").insert(items.slice(i, i + 500));
-      if (error) return toast.error(error.message);
+      if (error) return void toast.error(error.message);
     }
     toast.success(`Imported ${items.length} contacts`);
     refresh();
